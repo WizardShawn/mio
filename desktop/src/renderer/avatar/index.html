@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!--
+      M-2.8 (mobile) — without an explicit viewport meta the Android
+      WebView defaults to a 980 CSS-px wide layout viewport and then
+      scales the page down to fit, which makes pointer coordinates
+      drift relative to the WebGL canvas. `viewport-fit=cover` keeps
+      the canvas reaching into the display cutout area on notched
+      phones; `user-scalable=no` blocks two-finger zoom of the page
+      itself so our pinch gesture has clean ownership of multi-touch.
+      Electron BrowserWindow ignores this tag (the window dictates
+      the viewport), so it's safe to share between desktop and mobile.
+    -->
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <!--
+      blob: is required by THREE.GLTFLoader, which unpacks embedded GLB
+      textures into Blob URLs and then re-fetches them via XHR. Without
+      blob: in connect-src the textures fail with a Cannot-set-colorSpace
+      crash from inside three-vrm. cortana-asset: is our custom file scheme.
+    -->
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: cortana-asset:; connect-src 'self' blob: cortana-asset:; media-src 'self' blob: cortana-asset:; font-src 'self' data:;" />
+    <title>Mio — Avatar</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <canvas id="avatar-canvas"></canvas>
+    <div id="placeholder" hidden>
+      <h2 id="placeholder-title">No VRM model found</h2>
+      <p id="placeholder-body"></p>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

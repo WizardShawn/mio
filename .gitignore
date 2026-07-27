@@ -1,0 +1,68 @@
+# Workspace-level ignores. Patterns apply across desktop/ and mobile/ so the
+# same .gitignore is the single source of truth for both subprojects.
+
+# ─── Secrets — nothing below this heading may ever reach a commit ───
+.env
+.env.local
+**/.env
+**/.env.local
+
+# Android signing material. `*.keystore` alone does NOT cover `.jks`, which is
+# the extension keytool actually produces by default — both are listed.
+**/*.jks
+**/*.keystore
+**/keystore.properties
+!**/debug.keystore          # Android debug keystore is committed by convention
+
+# Machine-local SDK paths and agent settings (leak the developer's drive layout)
+**/local.properties
+.claude/
+**/.claude/
+
+# ─── Personal configuration ───
+# The shipped persona.md is the professional default. A local override is
+# personal to whoever runs it and is never committed.
+persona.local.md
+**/persona.local.md
+
+# ─── Node / npm ───
+**/node_modules/
+**/.npm/
+**/.pnpm-store/
+
+# ─── Electron build artifacts (desktop/) ───
+**/out/
+**/release/
+**/dist/
+**/.vite/
+**/.cache/
+**/*.tsbuildinfo
+
+# Playwright browser bundle (downloaded at install time, not source)
+**/pw-browsers/
+
+# ─── Android build artifacts (mobile/) ───
+# Scoped to mobile/ on purpose. A blanket `**/build/` would also swallow
+# desktop/build/ (icon.png + electron-builder inputs, which ARE source), and a
+# `!desktop/build/` negation cannot rescue it — git never descends into an
+# excluded directory, so nothing inside it can be re-included.
+**/.gradle/
+mobile/**/build/
+**/captures/
+**/*.iml
+**/.idea/
+**/.cxx/
+
+# Avatar payload staged into the APK by avatar-bundler — generated, not source.
+# See mobile/android/avatar-bundler/README.md.
+mobile/android/app/src/main/assets/avatar/
+
+# ─── Logs ───
+*.log
+**/*.log
+
+# ─── OS / IDE noise ───
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

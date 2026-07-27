@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Mirror of the desktop palette in
+         desktop/src/renderer/settings/style.css so phone + desktop look
+         like the same app. -->
+    <color name="mio_bg">#FF12141B</color>
+    <color name="mio_surface">#FF1B1F29</color>
+    <color name="mio_text">#FFE9ECF2</color>
+    <color name="mio_text_dim">#FF9AA3B2</color>
+    <color name="mio_accent">#FFFFD07A</color>
+    <color name="mio_accent_soft">#26FFD07A</color>
+    <color name="mio_error">#FFFF8A8A</color>
+    <color name="mio_success">#FF6DD8A7</color>
+    <color name="mio_launcher_bg">#FFFFFFFF</color>
+</resources>

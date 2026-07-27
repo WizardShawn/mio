@@ -1,0 +1,690 @@
+:root {
+  color-scheme: dark;
+  --bg: #12141b;
+  --card: #1b1f29;
+  --border: rgba(255, 255, 255, 0.07);
+  --text: #e9ecf2;
+  --text-dim: #9aa3b2;
+  --accent: #ffd07a;
+  --accent-soft: rgba(255, 208, 122, 0.15);
+  --error: #ff8a8a;
+  --success: #6dd8a7;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  user-select: none;
+}
+
+main {
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.layout {
+  display: flex;
+  gap: 18px;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: 130px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.nav-item {
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: rgba(255, 208, 122, 0.25);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.page {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page.active {
+  display: flex;
+}
+
+/*
+ * Section header — a small uppercase label that groups a few related
+ * cards under one banner (e.g. "API Connections" sits above the
+ * Anthropic / Gemini / ComfyUI cards on the General page).
+ */
+.section-header {
+  margin: 2px 2px -4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.subtitle {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.card-body {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.field-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+#display-name-input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  user-select: text;
+}
+
+#display-name-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#session-rename-input {
+  flex: 1;
+  min-width: 140px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  user-select: text;
+}
+
+#session-rename-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#api-key-input,
+#gemini-key-input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  user-select: text;
+}
+
+#api-key-input:focus,
+#gemini-key-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#greeting-input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+  min-height: 60px;
+  user-select: text;
+}
+
+#greeting-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#session-picker,
+#agent-interval,
+#agent-cost-cap,
+#agent-cycle-cap,
+#agent-notify-cap {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  user-select: text;
+}
+
+#session-picker:focus,
+#agent-interval:focus,
+#agent-cost-cap:focus,
+#agent-cycle-cap:focus,
+#agent-notify-cap:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+button.ghost.danger {
+  color: var(--error);
+}
+
+button.ghost.danger:hover {
+  background: rgba(255, 138, 138, 0.08);
+}
+
+.status-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 160px) 1fr;
+  column-gap: 14px;
+  row-gap: 8px;
+  font-size: 12px;
+}
+
+.status-list dt {
+  color: var(--text-dim);
+}
+
+.status-list dd {
+  margin: 0;
+  color: var(--text);
+  word-break: break-word;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+button {
+  font-family: inherit;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+}
+
+button.primary {
+  background: var(--accent);
+  color: #1a1408;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+button.primary:hover {
+  filter: brightness(1.08);
+}
+
+button.ghost {
+  background: transparent;
+  color: var(--text);
+}
+
+button.ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.feedback {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.feedback.error {
+  color: var(--error);
+}
+
+.feedback.success {
+  color: var(--success);
+}
+
+.status {
+  font-size: 11px;
+  color: var(--text-dim);
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.status.has-key {
+  color: var(--success);
+  background: rgba(109, 216, 167, 0.1);
+}
+
+.status.no-key {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.status.no-encryption {
+  color: var(--error);
+  background: rgba(255, 138, 138, 0.1);
+}
+
+.hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+code {
+  background: rgba(255, 255, 255, 0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+}
+
+/* ─────────── Hotkeys page ─────────── */
+
+.hotkey-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: minmax(0, auto) 1fr;
+  column-gap: 18px;
+  row-gap: 10px;
+  align-items: baseline;
+}
+
+.hotkey-list dt {
+  font-size: 12px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.hotkey-list dd {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.45;
+}
+
+kbd {
+  display: inline-block;
+  min-width: 14px;
+  text-align: center;
+  padding: 2px 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.scope {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.muted {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ─────────── Gestures page ─────────── */
+
+/* Action pill — distinct from `kbd` so "Hover", "Wiggle", "Right click"
+ * read as physical actions rather than literal key presses. Keeps the
+ * Hotkeys page's `kbd` styling untouched. */
+.gkey {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 208, 122, 0.3);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.hotkey-list dd strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.toggle-row:first-of-type {
+  border-top: none;
+  padding-top: 4px;
+}
+
+.toggle-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+}
+
+.toggle-row .hint-inline {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-weight: normal;
+  line-height: 1.45;
+}
+
+.toggle-row input[type='checkbox'] {
+  flex-shrink: 0;
+  width: 36px;
+  height: 20px;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  margin-top: 2px;
+}
+
+.toggle-row input[type='checkbox']::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 16px;
+  height: 16px;
+  background: var(--text);
+  border-radius: 50%;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.toggle-row input[type='checkbox']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle-row input[type='checkbox']:checked::before {
+  transform: translateX(16px);
+  background: #1a1408;
+}
+
+/* ─────────── Tools / Permissions pages ─────────── */
+
+#permission-mode {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  user-select: text;
+}
+
+#permission-mode:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+#sensitive-apps,
+#denylist-extras {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 60px;
+  user-select: text;
+}
+
+#sensitive-apps:focus,
+#denylist-extras:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.audit-log {
+  display: flex;
+  flex-direction: column;
+  max-height: 230px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.audit-row {
+  display: grid;
+  grid-template-columns: 58px 78px 1fr;
+  gap: 10px;
+  padding: 6px 10px;
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+  align-items: baseline;
+}
+
+.audit-row:last-child {
+  border-bottom: none;
+}
+
+.audit-time {
+  color: var(--text-dim);
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.audit-decision {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 9.5px;
+}
+
+.audit-decision.auto {
+  color: var(--text-dim);
+}
+.audit-decision.allowed {
+  color: var(--success);
+}
+.audit-decision.denied {
+  color: var(--accent);
+}
+.audit-decision.blocked {
+  color: var(--error);
+}
+
+.audit-summary {
+  color: var(--text);
+  word-break: break-word;
+}
+
+.audit-empty {
+  padding: 12px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ─── Mobile pairing (Phase M-1) ────────────────────────────────── */
+.pairing-output {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.pairing-output[hidden] {
+  display: none;
+}
+
+#pairing-qr {
+  width: 200px;
+  height: 200px;
+  background: #f5efe2;
+  border-radius: 6px;
+  padding: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  image-rendering: pixelated;
+}
+
+.pairing-details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 4px 12px;
+  font-size: 11px;
+}
+
+.pairing-details dt {
+  color: var(--text-dim);
+}
+
+.pairing-details dd {
+  margin: 0;
+  font-family: "Consolas", "SF Mono", ui-monospace, monospace;
+  color: var(--text);
+  word-break: break-all;
+}
+
+.pairing-uri {
+  display: block;
+  grid-column: 1 / -1;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: "Consolas", "SF Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  color: var(--accent);
+  word-break: break-all;
+  user-select: text;
+}
+
+.pairing-device-list {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: "Consolas", "SF Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text);
+}
+
+.pairing-device-list li {
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+  border: 1px solid var(--border);
+}
+
+.pairing-device-list li.muted {
+  color: var(--text-dim);
+  font-style: italic;
+}

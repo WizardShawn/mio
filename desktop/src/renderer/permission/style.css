@@ -1,0 +1,232 @@
+/*
+ * Permission approval popup — a frameless transparent glass card that
+ * matches the tray menu (menu/style.css) so it reads as the same
+ * product, not a system dialog. Two modes share the card: an approval
+ * prompt and the computer-use status bar.
+ */
+
+:root {
+  color-scheme: dark;
+  --bg: rgba(18, 20, 27, 0.94);
+  --border: rgba(255, 255, 255, 0.08);
+  --divider: rgba(255, 255, 255, 0.06);
+  --text: #e9ecf2;
+  --text-dim: #9aa3b2;
+  --accent: #ffd07a;
+  --accent-soft: rgba(255, 208, 122, 0.14);
+  --danger: #ff8a8a;
+  --danger-soft: rgba(255, 138, 138, 0.12);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  background: transparent !important;
+  color: var(--text);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  user-select: none;
+  overflow: hidden;
+}
+
+body {
+  /* Outer breathing room so the card's drop-shadow isn't clipped. */
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  overflow: hidden;
+  animation: card-in 150ms ease-out;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ─── Approval prompt ─── */
+
+.prompt {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 14px;
+}
+
+.phead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.picon {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.ptitle {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.psummary {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text-dim);
+  word-break: break-word;
+  /* Cap height so long summaries cannot push action buttons below the
+     clamped BrowserWindow (see PERMISSION_MAX_HEIGHT in windows.ts). */
+  max-height: 4.35em;
+  overflow: auto;
+  flex-shrink: 0;
+}
+
+.ppreview {
+  margin: 0;
+  max-height: 188px;
+  overflow: auto;
+  padding: 9px 11px;
+  background: rgba(0, 0, 0, 0.32);
+  border: 1px solid var(--divider);
+  border-radius: 8px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+}
+
+/* Diff preview — tint the before/after markers. */
+.ppreview .diff-del {
+  color: var(--danger);
+}
+.ppreview .diff-add {
+  color: #6dd8a7;
+}
+
+.pbuttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* When "Always allow" is hidden, the remaining three sit in a single row. */
+.pbuttons.no-always {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.pbtn {
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 80ms ease, color 80ms ease, filter 80ms ease;
+}
+
+.pbtn:hover,
+.pbtn:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent);
+  outline: none;
+}
+
+.pbtn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1a1408;
+  font-weight: 600;
+}
+
+.pbtn.primary:hover,
+.pbtn.primary:focus-visible {
+  filter: brightness(1.08);
+  color: #1a1408;
+}
+
+.pbtn.deny:hover,
+.pbtn.deny:focus-visible {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ─── Computer-use status bar ─── */
+
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+}
+
+.cu-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 9px var(--accent);
+  flex-shrink: 0;
+  animation: cu-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes cu-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.18); }
+}
+
+.cu-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.cu-text #status-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.cu-step {
+  font-size: 10.5px;
+  color: var(--text-dim);
+}

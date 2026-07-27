@@ -1,0 +1,286 @@
+/*
+ * Minimum-design speech surface.
+ * Two stacked rounded pills floating on a fully-transparent window:
+ *   • Caption pill (vtuber-subtitle style)
+ *   • Input pill (slim, single-line)
+ * Nothing else. No window chrome, no background, no panels.
+ */
+
+:root {
+  color-scheme: dark;
+  --pill-bg: rgba(15, 18, 26, 0.82);
+  --pill-bg-input: rgba(15, 18, 26, 0.88);
+  --pill-border: rgba(255, 255, 255, 0.07);
+  --pill-text: #ffffff;
+  --pill-text-dim: rgba(255, 255, 255, 0.78);
+  --pill-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --pill-radius: 14px;
+  --accent: #ffd07a;
+  --warning-bg: rgba(220, 90, 90, 0.88);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  overflow: hidden;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: var(--pill-text);
+  user-select: none;
+}
+
+#surface {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: stretch;
+  /* TOP-anchored: the chat window’s top edge is placed under her feet (see
+   * windows.ts). Stacking from flex-start keeps the caption tight to that
+   * edge instead of flex-end, which left a tall empty band above the
+   * subtitle inside the fixed-height transparent window. Composer,
+   * attachment, and warning follow below the caption in DOM order. */
+  justify-content: flex-start;
+  height: 100%;
+  padding: 2px 12px 8px 12px;
+  box-sizing: border-box;
+}
+
+.pill {
+  background: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  border-radius: var(--pill-radius);
+  box-shadow: var(--pill-shadow);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  animation: pill-in 220ms ease-out;
+}
+
+.pill[hidden] {
+  display: none !important;
+}
+
+@keyframes pill-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pill-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.99);
+  }
+}
+
+.pill.fading-out {
+  animation: pill-out 420ms ease-in forwards;
+}
+
+/* ---------- Caption pill (assistant speech) ----------
+ * YouTube-style ONE-LINE subtitle bar: single sentence at a time,
+ * centered, ellipsis on overflow. Longer replies advance segment-by-
+ * segment via the controller in main.ts — the previous sentence
+ * fades out and the next fades in, like an auto-caption rolling. */
+.caption {
+  --caption-pill-bg: rgba(12, 14, 22, 0.75);
+  --caption-pill-border: rgba(255, 255, 255, 0.06);
+  --caption-pill-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  background: var(--caption-pill-bg);
+  border-color: var(--caption-pill-border);
+  box-shadow: var(--caption-pill-shadow);
+  border-radius: 8px;
+  padding: 4px 14px;
+  font-size: 13.5px;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--pill-text);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  max-height: calc(1.25em + 8px);
+  -webkit-app-region: drag;
+  user-select: text;
+}
+
+/* The inner text span holds one segment at a time. Single-line with
+ * ellipsis as a safety net for the rare sentence that doesn't fit, and
+ * a quick opacity transition the controller toggles via a `.swapping`
+ * class when advancing between segments. */
+.caption #caption-text {
+  display: inline-block;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+.caption #caption-text.swapping {
+  opacity: 0;
+}
+
+/* Critical agent-loop alert — main routes a cap breach / error pause
+ * here and the renderer tints the caption text red so a dead loop is
+ * visible at a glance instead of failing silently during a soak. */
+.caption #caption-text.alert {
+  color: #ff6b6b;
+}
+
+/* Tool-activity progress line — shown dim + italic while Mio runs a
+ * tool mid-turn ("搜尋網路中…"). Distinct from a real reply so it reads
+ * as transient status, not speech. */
+.caption #caption-text.tool-activity {
+  color: var(--pill-text-dim);
+  font-style: italic;
+}
+
+.caption .cursor {
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  flex: 0 0 auto;
+  background: var(--accent);
+  border-radius: 1px;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ---------- Input pill (user turn) ---------- */
+.input {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  background: var(--pill-bg-input);
+  -webkit-app-region: no-drag;
+}
+
+#input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--pill-text);
+  font-family: inherit;
+  font-size: 14px;
+  padding: 12px 18px;
+  caret-color: var(--accent);
+}
+
+#input::placeholder {
+  color: var(--pill-text-dim);
+  opacity: 0.6;
+}
+
+/* ---------- API key warning pill ---------- */
+.warning {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px 8px 16px;
+  background: var(--warning-bg);
+  font-size: 12px;
+  font-weight: 500;
+  -webkit-app-region: no-drag;
+}
+
+.warning-action {
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.warning-action:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* ---------- Attachment chip (paste preview) ----------
+ * Shown when the user pastes a screenshot into the input pill. Sits
+ * flush above the input pill so the two read as one composer block
+ * (no gap between them). The thumbnail is small on purpose — this is
+ * a confirmation chip, not an inline preview gallery. */
+.attachment {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px 6px 6px;
+  -webkit-app-region: no-drag;
+}
+
+#attachment-thumb {
+  width: 56px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex: 0 0 auto;
+}
+
+#attachment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+#attachment-label {
+  font-weight: 600;
+  color: var(--pill-text);
+}
+
+#attachment-hint {
+  color: var(--pill-text-dim);
+  font-size: 10.5px;
+  opacity: 0.85;
+}
+
+.attachment-remove {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: var(--pill-text);
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.attachment-remove:hover {
+  background: rgba(255, 255, 255, 0.18);
+}

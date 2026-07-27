@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- We never want auto-backup to lift the encrypted token blob to
+     Google's cloud — re-pairing is the trust boundary, not "restore
+     from backup". Excluding everything keeps the design honest. -->
+<full-backup-content>
+    <exclude domain="sharedpref" path="." />
+    <exclude domain="file" path="." />
+    <exclude domain="database" path="." />
+</full-backup-content>

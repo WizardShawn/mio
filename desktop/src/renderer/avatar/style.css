@@ -1,0 +1,103 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: #fff;
+  /*
+   * IMPORTANT (Windows): `-webkit-app-region: drag` swallows essentially all
+   * mouse events — the gesture controller never hears pointermove/click — so we
+   * keep the avatar surface `no-drag` and move the frameless window with
+   * Alt + pointer drag (see main.ts + AvatarMoveWindowBy IPC).
+   */
+  -webkit-app-region: no-drag;
+  user-select: none;
+}
+
+#avatar-canvas {
+  display: block;
+  /* Size to the viewport via fixed-positioning + inset. Android
+     WebView computes `height: 100%` (the percentage chain collapses
+     to 0) and `height: 100vh` (a long-standing WebView vh bug) both
+     as 0; a fixed element with `inset: 0` resolves against the
+     viewport directly — and is equivalent on desktop. */
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  -webkit-app-region: no-drag;
+  cursor: default;
+  /*
+   * M-2.8 (mobile) — tell the browser not to interpret touches on the
+   * canvas as scroll / zoom / text-selection gestures. Without this:
+   *   - Android WebView's long-press handler steals a 1.5 s caress
+   *     dwell as a text-selection / magnifier gesture.
+   *   - `touch-action: auto` lets the OS cancel pointers mid-drag
+   *     when its browser-scroll heuristic thinks the user meant to
+   *     scroll, which breaks stroke / tug.
+   *   - `-webkit-touch-callout: none` suppresses the iOS-style
+   *     selection callout pop-up that some Android WebView builds
+   *     still trigger on long-press over a non-text element.
+   *   - `-webkit-user-select: none` is the canvas-local guard for the
+   *     same selection cursor; the body-level `user-select: none`
+   *     above doesn't always inherit into the WebGL canvas.
+   *
+   * All four properties are no-ops on desktop Electron (the
+   * frameless window receives no scroll/zoom from the mouse anyway),
+   * so we keep them in the shared stylesheet rather than forking it.
+   */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#avatar-canvas.over-body {
+  cursor: pointer;
+}
+
+#placeholder {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  max-width: calc(100% - 24px);
+  padding: 10px 14px;
+  background: rgba(15, 17, 22, 0.78);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  text-align: left;
+  pointer-events: none;
+  -webkit-app-region: no-drag;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+#placeholder h2 {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffd07a;
+}
+
+#placeholder p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.4;
+  opacity: 0.85;
+  word-break: break-word;
+}
+
+#placeholder code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 10px;
+  word-break: break-all;
+}

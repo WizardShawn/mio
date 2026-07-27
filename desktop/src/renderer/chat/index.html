@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' cortana-asset:; connect-src 'self';" />
+    <title>Mio — Chat</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!--
+      Minimum-design speech surface anchored directly under the avatar's
+      feet. Top-to-bottom stack:
+        • Caption pill (her reply — streams near the feet).
+        • Optional API-key warning pill.
+        • Attachment chip (only when the user pastes a screenshot —
+          sits flush above the input pill so it reads as part of the
+          composer instead of a separate notification).
+        • Input pill (hidden by default; revealed by Ctrl+Enter;
+          stays under the caption while she replies).
+      No title bar, no message history list, no settings panel — those live
+      in the dedicated settings window opened from the tray menu.
+    -->
+    <div id="surface">
+      <div id="caption" class="pill caption" hidden>
+        <span id="caption-text"></span><span class="cursor" hidden></span>
+      </div>
+
+      <div id="api-warning" class="pill warning" hidden>
+        <span id="api-warning-text">No Anthropic API key set.</span>
+        <button id="open-settings" class="warning-action">Open settings</button>
+      </div>
+
+      <div id="attachment" class="pill attachment" hidden>
+        <img id="attachment-thumb" alt="attached screenshot" />
+        <div id="attachment-meta">
+          <span id="attachment-label">Screenshot attached</span>
+          <span id="attachment-hint">Will be saved with this turn.</span>
+        </div>
+        <button id="attachment-remove" class="attachment-remove" title="Remove attachment">×</button>
+      </div>
+
+      <div id="composer" class="pill input" hidden>
+        <input
+          id="input"
+          type="text"
+          placeholder="Talk to her — Enter to send, Ctrl+V to paste an image"
+          autocomplete="off"
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

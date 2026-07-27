@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self';" />
+    <title>Mio — Settings</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Settings</h1>
+        <p class="subtitle">Configure Mio. Closed by default — open from the tray.</p>
+      </header>
+
+      <div class="layout">
+        <nav class="sidebar" aria-label="Settings sections">
+          <button class="nav-item active" data-page="general" type="button">General</button>
+          <button class="nav-item" data-page="sessions" type="button">Sessions</button>
+          <button class="nav-item" data-page="agent" type="button">Agent</button>
+          <button class="nav-item" data-page="tools" type="button">Tools</button>
+          <button class="nav-item" data-page="permissions" type="button">Permissions</button>
+          <button class="nav-item" data-page="hotkeys" type="button">Hotkeys</button>
+          <button class="nav-item" data-page="gestures" type="button">Gestures</button>
+          <button class="nav-item" data-page="mobile" type="button">Mobile</button>
+        </nav>
+
+        <div class="content">
+          <!-- ─────────── General page ─────────── -->
+          <section class="page active" data-page="general">
+            <section class="card">
+              <h2>Your name</h2>
+              <p class="card-body">
+                The name Mio should use when talking to you. Saved on this device only
+                (plain text).
+              </p>
+
+              <label for="display-name-input" class="field-label">What should Mio call you?</label>
+              <input
+                id="display-name-input"
+                type="text"
+                autocomplete="name"
+                spellcheck="false"
+                placeholder="e.g. Alex"
+              />
+
+              <div class="row">
+                <button id="save-name-btn" class="primary">Save name</button>
+                <span id="name-feedback" class="feedback"></span>
+              </div>
+            </section>
+
+            <div class="section-header">API Connections</div>
+
+            <section class="card">
+              <h2>Anthropic API key</h2>
+              <p class="card-body">
+                Used for both interactive chat and the autonomous cycle.
+                Stored encrypted on disk via the OS keychain (Windows DPAPI).
+                Never written in plain text.
+              </p>
+
+              <div id="status-line" class="status"></div>
+
+              <label for="api-key-input" class="field-label">Paste key</label>
+              <input
+                id="api-key-input"
+                type="password"
+                autocomplete="off"
+                placeholder="sk-ant-…"
+                spellcheck="false"
+              />
+
+              <div class="row">
+                <button id="save-btn" class="primary">Save</button>
+                <button id="clear-btn" class="ghost">Clear stored key</button>
+                <span id="feedback" class="feedback"></span>
+              </div>
+
+              <p class="hint">
+                Or set <code>ANTHROPIC_API_KEY</code> as an environment variable
+                before launching Mio — the env var wins over the stored key.
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>Gemini API key (TTS voice)</h2>
+              <p class="card-body">
+                Optional. Used to synthesize Mio's spoken voice (startup greeting and
+                the post-reply line read in the caption) in the "Leda" voice via
+                <code>gemini-3.1-flash-tts-preview</code>. Each line of text is
+                generated once and cached on disk; subsequent plays are offline.
+              </p>
+
+              <div id="gemini-status-line" class="status"></div>
+
+              <label for="gemini-key-input" class="field-label">Paste key</label>
+              <input
+                id="gemini-key-input"
+                type="password"
+                autocomplete="off"
+                placeholder="AIza…"
+                spellcheck="false"
+              />
+
+              <div class="row">
+                <button id="gemini-save-btn" class="primary">Save</button>
+                <button id="gemini-clear-btn" class="ghost">Clear stored key</button>
+                <span id="gemini-feedback" class="feedback"></span>
+              </div>
+
+              <p class="hint">
+                Or set <code>GEMINI_API_KEY</code> (or <code>GOOGLE_API_KEY</code>) as
+                an environment variable. Voice playback is skipped silently when no key is
+                configured.
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>ComfyUI (image generation)</h2>
+              <p class="card-body">
+                Lets Mio draw with a local ComfyUI server. Run ComfyUI with
+                <code>--enable-cors-header *</code>. The default workflow uses
+                <code>GrokImageNode</code> — a Comfy Cloud Partner Node that bills
+                against your Comfy Cloud credit balance, so we also need your Comfy
+                Cloud API key from <code>platform.comfy.org</code>. Both are stored
+                encrypted on disk via the OS keychain (Windows DPAPI); neither is
+                ever written in plain text. Mio decides on her own when to draw — she
+                is never forced.
+              </p>
+
+              <label class="toggle-row" for="comfyui-enabled">
+                <span>
+                  <strong>Enable image generation</strong>
+                  <span class="hint-inline">
+                    Master switch. When off the <code>generate_image</code> tool refuses
+                    every call regardless of the URL or key below.
+                  </span>
+                </span>
+                <input id="comfyui-enabled" type="checkbox" />
+              </label>
+
+              <label for="comfyui-server-url" class="field-label">Local server URL</label>
+              <input
+                id="comfyui-server-url"
+                type="text"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="http://127.0.0.1:8000"
+              />
+
+              <div id="comfy-cloud-status-line" class="status"></div>
+
+              <label for="comfy-cloud-key-input" class="field-label">
+                Comfy Cloud API key
+              </label>
+              <input
+                id="comfy-cloud-key-input"
+                type="password"
+                autocomplete="off"
+                placeholder="comfyui-…"
+                spellcheck="false"
+              />
+
+              <div class="row">
+                <button id="comfy-cloud-save-btn" class="primary">Save key</button>
+                <button id="comfy-cloud-clear-btn" class="ghost">Clear stored key</button>
+                <span id="comfy-cloud-feedback" class="feedback"></span>
+              </div>
+
+              <p class="hint">
+                The key is sent to your local ComfyUI server in
+                <code>extra_data.api_key_comfy_org</code> on every workflow submission so
+                Partner Nodes (Grok, Flux Pro, Ideogram, …) can authorize against your
+                Comfy Cloud subscription. Or set <code>COMFY_CLOUD_API_KEY</code> as an
+                environment variable — the env var wins over the stored key.
+              </p>
+
+              <label for="comfyui-daily-cap" class="field-label">Daily image cap</label>
+              <input id="comfyui-daily-cap" type="number" min="1" step="1" />
+
+              <label for="comfyui-overlay-secs" class="field-label">
+                Overlay auto-dismiss (seconds)
+              </label>
+              <input id="comfyui-overlay-secs" type="number" min="5" step="5" />
+
+              <div class="row">
+                <button id="comfyui-save-btn" class="primary">Save</button>
+                <button id="comfyui-test-btn" class="ghost">Test connection</button>
+                <span id="comfyui-feedback" class="feedback"></span>
+              </div>
+
+              <p class="hint">
+                Test connection probes both the local server (<code>/system_stats</code>)
+                and the Comfy Cloud key (<code>/api/user</code>) — both must pass for
+                Partner-Node workflows to succeed. Hourly burst cap (10/hour) and
+                per-cycle cap (1/cycle, autonomous loop only) are fixed. Generated PNGs
+                land in <code>&lt;app-data&gt;/generated/</code> — no other path is accepted.
+              </p>
+            </section>
+          </section>
+
+          <!-- ─────────── Sessions page ─────────── -->
+          <section class="page" data-page="sessions">
+            <section class="card">
+              <h2>Conversation sessions</h2>
+              <p class="card-body">
+                Mio remembers everything you say to her per session. Pick the
+                conversation she should pick up from, start a fresh one, or
+                clear history when you want a clean slate.
+              </p>
+
+              <label for="session-picker" class="field-label">Active session</label>
+              <select id="session-picker"></select>
+
+              <label for="session-rename-input" class="field-label">Rename current session</label>
+              <div class="row">
+                <input
+                  id="session-rename-input"
+                  type="text"
+                  maxlength="120"
+                  autocomplete="off"
+                  spellcheck="false"
+                  placeholder="Session name"
+                />
+                <button id="session-rename-btn" type="button" class="ghost">Rename</button>
+              </div>
+
+              <div class="row">
+                <button id="session-new-btn" class="primary">New session</button>
+                <button id="session-delete-btn" class="ghost">Delete current</button>
+                <button id="session-clear-all-btn" class="ghost danger">Clear all history</button>
+                <span id="session-feedback" class="feedback"></span>
+              </div>
+
+              <p class="hint">
+                Starting a new session plays Mio's greeting line (audio if a
+                Gemini key is configured, text-only otherwise).
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>Greeting line</h2>
+              <p class="card-body">
+                The line Mio speaks on every fresh session. Defaults to the
+                quoted line in <code>persona.md</code> under <strong>On startup</strong>.
+                Editing here overrides the file without modifying it.
+              </p>
+
+              <label for="greeting-input" class="field-label">Override (leave blank to use persona file)</label>
+              <textarea
+                id="greeting-input"
+                rows="3"
+                spellcheck="false"
+                placeholder="嗯……你來了。我一直都在這裡等著你呢。今天想做什麼？"
+              ></textarea>
+              <p class="hint">
+                Currently effective: <span id="greeting-effective" class="muted"></span>
+              </p>
+
+              <div class="row">
+                <button id="greeting-save-btn" class="primary">Save line</button>
+                <button id="greeting-play-btn" class="ghost">Play now</button>
+                <span id="greeting-feedback" class="feedback"></span>
+              </div>
+
+              <label class="toggle-row" for="greeting-launch">
+                <span>
+                  <strong>Play greeting on app launch</strong>
+                  <span class="hint-inline">
+                    When off, Mio still greets you on every new session — just
+                    not automatically when the app starts.
+                  </span>
+                </span>
+                <input id="greeting-launch" type="checkbox" />
+              </label>
+            </section>
+          </section>
+
+          <!-- ─────────── Agent page ─────────── -->
+          <section class="page" data-page="agent">
+            <section class="card">
+              <h2>Autonomous cycle</h2>
+              <p class="card-body">
+                Mio quietly checks on you on a fixed interval. Most ticks
+                write only a private observation; occasionally something
+                clears the bar to be surfaced as a desktop toast. Optionally,
+                when a tick is <code>notable</code>, she can also send a real
+                chat reply using your session and a fresh screenshot (toggle below).
+              </p>
+
+              <label class="toggle-row" for="agent-enabled">
+                <span>
+                  <strong>Run the cycle</strong>
+                  <span class="hint-inline">
+                    Master switch. The cycle stays off until you turn this on.
+                  </span>
+                </span>
+                <input id="agent-enabled" type="checkbox" />
+              </label>
+
+              <label class="toggle-row" for="agent-notable-chat">
+                <span>
+                  <strong>Notable → chat check-in</strong>
+                  <span class="hint-inline">
+                    When a cycle marks <code>notable</code>, also send one interactive chat
+                    turn (session history + fresh auto screenshot) so she can check on you in the
+                    caption like a normal reply.
+                  </span>
+                </span>
+                <input id="agent-notable-chat" type="checkbox" />
+              </label>
+
+              <label for="agent-interval" class="field-label">Interval (minutes)</label>
+              <input id="agent-interval" type="number" min="1" step="1" />
+
+              <label for="agent-cost-cap" class="field-label">Daily cost cap (USD)</label>
+              <input id="agent-cost-cap" type="number" min="0" step="0.5" />
+
+              <label for="agent-cycle-cap" class="field-label">Hourly cycle cap</label>
+              <input id="agent-cycle-cap" type="number" min="1" step="1" />
+
+              <label for="agent-notify-cap" class="field-label">Hourly notification cap</label>
+              <input id="agent-notify-cap" type="number" min="0" step="1" />
+
+              <div class="row">
+                <button id="agent-save-btn" class="primary">Save</button>
+                <button id="agent-run-now-btn" class="ghost">Run one cycle now</button>
+                <button id="agent-pause-btn" class="ghost">Pause / Resume</button>
+                <span id="agent-feedback" class="feedback"></span>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>Status</h2>
+              <dl class="status-list">
+                <dt>State</dt><dd id="agent-state">—</dd>
+                <dt>Reason</dt><dd id="agent-reason">—</dd>
+                <dt>Last run</dt><dd id="agent-last-run">—</dd>
+                <dt>Next run</dt><dd id="agent-next-run">—</dd>
+                <dt>Cycles today</dt><dd id="agent-cycles-today">0</dd>
+                <dt>Images today</dt><dd id="agent-images-today">0 / 50</dd>
+                <dt>Estimated spend today</dt><dd id="agent-cost-today">$0.00</dd>
+                <dt>Consecutive errors</dt><dd id="agent-errors">0</dd>
+                <dt>Memory context</dt><dd id="agent-context-tokens">—</dd>
+              </dl>
+            </section>
+          </section>
+
+          <!-- ─────────── Tools page ─────────── -->
+          <section class="page" data-page="tools">
+            <section class="card">
+              <h2>Agent tools</h2>
+              <p class="card-body">
+                When enabled, Mio can use tools to act on your PC — read files,
+                search the web, drive a browser, write files, and run commands.
+                Reads, web search, and browsing are free; anything that changes
+                your machine asks for your approval first.
+              </p>
+
+              <label class="toggle-row" for="tools-enabled">
+                <span>
+                  <strong>Enable agent tools</strong>
+                  <span class="hint-inline">
+                    Master switch. When off, Mio can only talk — no file, web,
+                    browser, or shell access.
+                  </span>
+                </span>
+                <input id="tools-enabled" type="checkbox" />
+              </label>
+            </section>
+
+            <section class="card">
+              <h2>Permission mode</h2>
+              <p class="card-body">
+                How freely Mio acts. Hard-blocked targets (Windows system files,
+                credential stores) are refused in every mode.
+              </p>
+              <label for="permission-mode" class="field-label">Mode</label>
+              <select id="permission-mode">
+                <option value="guarded">Guarded — ask before each file write / command</option>
+                <option value="autopilot">Autopilot — act without asking (system files still blocked)</option>
+                <option value="readonly">Read-only — never change anything</option>
+              </select>
+              <p class="hint">
+                Computer-use sessions always ask for approval to start, in every mode.
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>Workspace folder</h2>
+              <p class="card-body">
+                Default working directory for shell commands and relative file
+                paths. File <em>reads</em> are never confined to this folder.
+              </p>
+              <label class="field-label">Current folder</label>
+              <p><code id="workspace-path">—</code></p>
+              <div class="row">
+                <button id="workspace-pick-btn" class="ghost">Choose folder…</button>
+                <span id="tools-feedback" class="feedback"></span>
+              </div>
+            </section>
+          </section>
+
+          <!-- ─────────── Permissions page ─────────── -->
+          <section class="page" data-page="permissions">
+            <section class="card">
+              <h2>Sensitive apps</h2>
+              <p class="card-body">
+                During a computer-use session, Mio pauses for your approval
+                whenever the foreground window's title contains one of these
+                words (banking, password managers, terminals…). One per line.
+              </p>
+              <textarea id="sensitive-apps" rows="7" spellcheck="false"></textarea>
+              <div class="row">
+                <button id="sensitive-save-btn" class="primary">Save list</button>
+                <span id="sensitive-feedback" class="feedback"></span>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>Protected paths</h2>
+              <p class="card-body">
+                Extra folders Mio may never write to or delete, on top of the
+                built-in system list. One absolute path per line.
+              </p>
+              <textarea id="denylist-extras" rows="4" spellcheck="false"
+                placeholder="C:\Users\you\PrivateStuff"></textarea>
+              <div class="row">
+                <button id="denylist-save-btn" class="primary">Save</button>
+                <button id="grants-clear-btn" class="ghost">Forget all "always allow" grants</button>
+                <span id="denylist-feedback" class="feedback"></span>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>Activity log</h2>
+              <p class="card-body">
+                Every gated tool action Mio has taken, and how it was decided.
+              </p>
+              <div class="row">
+                <button id="audit-refresh-btn" class="ghost">Refresh</button>
+              </div>
+              <div id="audit-log" class="audit-log"></div>
+            </section>
+          </section>
+
+          <!-- ─────────── Hotkeys page ─────────── -->
+          <section class="page" data-page="hotkeys">
+            <section class="card">
+              <h2>Chat</h2>
+              <p class="card-body">Talking to Mio from anywhere on the desktop.</p>
+              <dl class="hotkey-list">
+                <dt><kbd>Ctrl</kbd>+<kbd>Enter</kbd> <span class="scope">global</span></dt>
+                <dd>Summon the typing bar near Mio's feet. Press again to dismiss it.</dd>
+
+                <dt><kbd>Enter</kbd> <span class="scope">in input</span></dt>
+                <dd>Send the message. The current screen is attached automatically.</dd>
+
+                <dt><kbd>Esc</kbd> <span class="scope">in input</span></dt>
+                <dd>Hide the typing bar and return focus to the desktop.</dd>
+
+                <dt><kbd>Ctrl</kbd>+<kbd>V</kbd> <span class="scope">in input</span></dt>
+                <dd>
+                  Paste an image from the clipboard to attach to the next message
+                  (PNG, JPEG, WebP, or GIF). Persisted in chat history.
+                </dd>
+              </dl>
+            </section>
+
+            <section class="card">
+              <h2>Avatar window</h2>
+              <p class="card-body">Repositioning Mio on the desktop.</p>
+              <dl class="hotkey-list">
+                <dt><kbd>Alt</kbd> + drag <span class="scope">on avatar</span></dt>
+                <dd>Reposition Mio anywhere on the desktop.</dd>
+              </dl>
+              <p class="hint">
+                Touching Mio directly (caress, poke, tickle, and friends) lives
+                on its own page — see <strong>Gestures</strong>.
+              </p>
+            </section>
+
+            <p class="hint">
+              Global hotkeys (like <kbd>Ctrl</kbd>+<kbd>Enter</kbd>) only register
+              once on launch. If another app already owns the combo, the tray
+              icon is your fallback for opening chat.
+            </p>
+          </section>
+
+          <!-- ─────────── Gestures page ─────────── -->
+          <section class="page" data-page="gestures">
+            <section class="card">
+              <h2>Touch input</h2>
+              <p class="card-body">
+                Mio has a body-wide proprioceptive map. Move the mouse over her,
+                use one of the gestures below, and she reacts in character. Each
+                gesture has a per-region cooldown so a single touch doesn't
+                trigger over and over. Rapid bursts get coalesced into one
+                reply so she doesn't stutter through a flurry of pokes.
+              </p>
+              <p class="card-body">
+                <strong>Alt + drag is reserved</strong> for repositioning the
+                avatar window — gestures never fire while Alt is held.
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>Gestures</h2>
+              <dl class="hotkey-list">
+                <dt><span class="gkey">Hover</span> <span class="muted">~1.5 s</span> <span class="scope">on a region</span></dt>
+                <dd>
+                  <strong>Caress</strong> — sustained gentle touch. Affectionate
+                  on face / hair, ticklish on sides / feet, bashful on ears /
+                  lips / collarbone.
+                </dd>
+
+                <dt><span class="gkey">Click</span> <span class="scope">on a region</span></dt>
+                <dd>
+                  <strong>Poke</strong> — a quick prod. Plays as "hey, you" at
+                  the spot you tapped.
+                </dd>
+
+                <dt><span class="gkey">Click</span> + <span class="gkey">Click</span> <span class="muted">&lt; 0.4 s apart</span></dt>
+                <dd>
+                  <strong>Pat</strong> — a double-tap on the same region.
+                  Reads softer than a poke.
+                </dd>
+
+                <dt><span class="gkey">Wiggle</span> <span class="scope">inside a region</span></dt>
+                <dd>
+                  <strong>Tickle</strong> — rapid side-to-side mouse motion in
+                  one spot. Best results on sides, palms, feet, neck.
+                </dd>
+
+                <dt><span class="gkey">Hold</span> + drag along a limb</dt>
+                <dd>
+                  <strong>Stroke</strong> — slide along the length of an arm,
+                  leg, or limb segment. The drag has to roughly follow the
+                  bone direction.
+                </dd>
+
+                <dt><span class="gkey">Hold</span> still <span class="muted">~0.35 s</span></dt>
+                <dd>
+                  <strong>Grab</strong> — press and hold without moving. Reads
+                  as a deliberate clasp on the spot.
+                </dd>
+
+                <dt><span class="gkey">Hold</span> + drag away <span class="scope">on hair / skirt</span></dt>
+                <dd>
+                  <strong>Tug</strong> — pull a soft part outward. Only fires
+                  on hair, skirt, ribbon, and similar spring-bone chains.
+                </dd>
+
+                <dt><span class="gkey">Right click</span> <span class="scope">on a region</span></dt>
+                <dd>
+                  <strong>Pinch</strong> — a sharp two-finger pinch. Sharper
+                  than a poke; tends to draw a startled reaction.
+                </dd>
+              </dl>
+            </section>
+
+            <section class="card">
+              <h2>What she can feel</h2>
+              <p class="card-body">
+                Her body map covers head and face (forehead, cheeks, ears,
+                lips, chin, temples, back of head, nape of neck), neck, torso
+                (collarbone, upper chest, sides, stomach, upper and lower
+                back), arms (shoulders, upper arms, elbows, forearms, palms,
+                and each individual finger), and legs (thighs, knees, shins,
+                calves, ankles, feet, toes). Hair, skirt, and ribbon are
+                picked up from her spring bones automatically — the exact
+                zones depend on what's rigged on the loaded VRM.
+              </p>
+            </section>
+
+            <section class="card">
+              <h2>Preferences</h2>
+
+              <label class="toggle-row" for="gestures-enabled">
+                <span>
+                  <strong>Enable touch input</strong>
+                  <span class="hint-inline">
+                    Master switch. When off, Mio ignores cursor activity over
+                    her body entirely (you can still <kbd>Alt</kbd>+drag to
+                    reposition).
+                  </span>
+                </span>
+                <input id="gestures-enabled" type="checkbox" />
+              </label>
+
+              <div class="row">
+                <span id="gesture-prefs-feedback" class="feedback"></span>
+              </div>
+            </section>
+          </section>
+
+          <!-- ─────────── Mobile page (Phase M-1) ─────────── -->
+          <section class="page" data-page="mobile">
+            <section class="card">
+              <h2>Pair an Android phone</h2>
+              <p class="card-body">
+                Mio runs on this PC. Your phone is just a perception surface — a camera,
+                a mic, a screen — for the same brain. Show the QR below to the Mio
+                Android app to hand it a fresh, single-device token for this LAN session.
+              </p>
+
+              <p class="hint">
+                The token rotates every time you press <strong>Generate QR</strong> — re-pair
+                if you suspect a leak. Tokens are stored encrypted on disk via DPAPI;
+                Mio never sees plain-text token bytes after pair time.
+              </p>
+
+              <div class="row">
+                <button id="pairing-issue-btn" class="primary" type="button">Generate QR</button>
+                <button id="pairing-copy-btn" class="ghost" type="button" disabled>Copy payload</button>
+                <span id="pairing-feedback" class="feedback"></span>
+              </div>
+
+              <div id="pairing-output" class="pairing-output" hidden>
+                <img id="pairing-qr" alt="Pairing QR code" />
+                <dl class="pairing-details">
+                  <dt>LAN host</dt><dd id="pairing-host">—</dd>
+                  <dt>Port</dt><dd id="pairing-port">—</dd>
+                  <dt>Device id</dt><dd id="pairing-device">—</dd>
+                  <dt>Issued</dt><dd id="pairing-issued">—</dd>
+                </dl>
+                <p class="hint">
+                  Manual fallback (if the phone can't scan): paste the URI below into
+                  <em>Pair manually</em> in the Android app.
+                </p>
+                <code id="pairing-uri" class="pairing-uri"></code>
+              </div>
+            </section>
+
+            <section class="card">
+              <h2>Paired devices</h2>
+              <p class="card-body">
+                Device ids that currently hold a valid token. Phones identify themselves
+                by id in the WS handshake; tokens themselves never leave this machine
+                in plain text.
+              </p>
+              <div class="row">
+                <button id="pairing-refresh-btn" class="ghost" type="button">Refresh</button>
+              </div>
+              <ul id="pairing-device-list" class="pairing-device-list">
+                <li class="muted">No paired devices yet.</li>
+              </ul>
+            </section>
+          </section>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
