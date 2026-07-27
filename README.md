@@ -1,15 +1,32 @@
+<div align="center">
+
 # Mio
 
-A persistent VRM-avatar AI assistant for Windows. It runs continuously, keeps
-memory across sessions, watches the screen on its own schedule, and decides for
-itself when something is worth interrupting you for.
+**A persistent VRM-avatar AI assistant for Windows.**
+
+It runs continuously, keeps memory across sessions, watches the screen on its own
+schedule, and decides for itself when something is worth interrupting you for.
+
+<p>
+  <img alt="Platform: Windows" src="https://img.shields.io/badge/platform-Windows%2010%2F11-6D28D9?style=flat-square">
+  <img alt="Electron 41" src="https://img.shields.io/badge/Electron-41-3E4C59?style=flat-square">
+  <img alt="TypeScript 5.6" src="https://img.shields.io/badge/TypeScript-5.6-3E4C59?style=flat-square">
+  <img alt="SQLite" src="https://img.shields.io/badge/SQLite-better--sqlite3-3E4C59?style=flat-square">
+  <img alt="License: All rights reserved" src="https://img.shields.io/badge/license-all%20rights%20reserved-A78BFA?style=flat-square">
+</p>
 
 <table>
 <tr>
-<td width="32%"><img src="docs/media/avatar.png" alt="Mio's VRM avatar rendered as a transparent always-on-top overlay"></td>
-<td width="68%"><img src="docs/media/settings.png" alt="The Settings surface, showing the General, Sessions, Agent, Tools, Permissions, Hotkeys and Gestures sections"></td>
+<td width="33%" valign="top"><img src="docs/media/avatar.png" alt="Mio's VRM avatar, rendered as a transparent always-on-top desktop overlay"></td>
+<td width="67%" valign="top"><img src="docs/media/settings.png" alt="The Settings surface, showing the General, Sessions, Agent, Tools, Permissions, Hotkeys and Gestures sections"></td>
+</tr>
+<tr>
+<td align="center"><sub>Avatar overlay — transparent, frameless, always on top</sub></td>
+<td align="center"><sub>Settings — sessions, agent bounds, tools, permissions, gestures</sub></td>
 </tr>
 </table>
+
+</div>
 
 Mio is built as a **brain** and a set of **surfaces**. The brain owns everything
 stateful — the agent loop, the memory store, the persona, model orchestration —
@@ -169,6 +186,9 @@ All rights reserved — see [`LICENSE`](./LICENSE). Published as a portfolio wor
 sample: readable and reviewable, not licensed for reuse. Avatar assets carry
 their own separate terms.
 
----
+<div align="center">
+<br>
 
 **I-Shun Lo** · [ishunlo.studio](https://ishunlo.studio) · ishunl@outlook.com
+
+</div>
