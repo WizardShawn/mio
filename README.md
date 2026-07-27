@@ -7,7 +7,7 @@
 It runs continuously, keeps memory across sessions, watches the screen on its own
 schedule, and decides for itself when something is worth interrupting you for.
 
-<p><img alt="Platform: Windows" src="https://img.shields.io/badge/platform-Windows%2010%2F11-6D28D9?style=flat-square"> <img alt="Electron 41" src="https://img.shields.io/badge/Electron-41-3E4C59?style=flat-square"> <img alt="TypeScript 5.6" src="https://img.shields.io/badge/TypeScript-5.6-3E4C59?style=flat-square"> <img alt="SQLite" src="https://img.shields.io/badge/SQLite-better--sqlite3-3E4C59?style=flat-square"> <img alt="License: All rights reserved" src="https://img.shields.io/badge/license-all%20rights%20reserved-A78BFA?style=flat-square"></p>
+<sub>Electron · TypeScript · Three.js + three-vrm · SQLite · Anthropic + Gemini</sub>
 
 <table>
 <tr>
