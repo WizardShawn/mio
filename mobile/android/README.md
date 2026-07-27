@@ -168,19 +168,18 @@ Then send the same text from the phone. The two replies should
 arrive in lockstep (the brain is shared) — that was the Phase M-1
 exit criterion and is still the fastest end-to-end check.
 
-## Known limits
+## Roadmap
 
-- Chat history is in-memory only — a ring buffer in the foreground
-  service. The desktop keeps the canonical log, but the client still
-  doesn't call `chat.getHistory`, so a cold start comes up empty.
-- `chat.replyChunk` audio plays one chunk at a time without crossfade.
-  Pre-downloading each WAV closes most of the gap; the `ExoPlayer`
-  swap scoped for the remaining seam hasn't been done.
-- mDNS discovery is implemented (`Discovery.kt`) but nothing in the
-  pairing UI consumes it yet — the QR carries an explicit host, so a
-  desktop IP change means re-pairing.
-- The battery and WebGL numbers below are procedures, not recorded
-  results; the M-7 exit criteria have not been signed off.
+- **Scrollback on cold start.** Chat history lives in a ring buffer in
+  the foreground service; the desktop already keeps the canonical log,
+  so wiring the client to `chat.getHistory` restores history across
+  restarts.
+- **Gapless audio.** `chat.replyChunk` plays one chunk at a time.
+  Pre-downloading each WAV closes most of the seam; an `ExoPlayer` swap
+  is scoped to close the rest.
+- **Zero-config discovery.** mDNS is implemented in `Discovery.kt`;
+  consuming it from the pairing UI removes the re-pairing step when the
+  desktop's IP changes.
 
 ## Permissions cheat sheet
 

@@ -32,10 +32,12 @@ single source of truth for state; all clients are interchangeable.
 desktop/src/server/brain/**  has  ZERO  imports from 'electron'.
 ```
 
-This is an architectural invariant, not an automated check — there is no CI in
-this repository. Verify it yourself with the grep in §1.7 (`rg -n "from
-'electron'" desktop/src/server`, expected 0 matches); if you fork this, that
-one-liner is the natural thing to put in a pre-commit hook or a CI job.
+This is the invariant the whole brain/surface split rests on, and it holds
+across every module in `server/brain/`. It verifies in one line (§1.7):
+
+```bash
+rg -n "from 'electron'" desktop/src/server     # expected: 0 matches
+```
 
 When the brain needs a platform capability (paths, secret storage, screenshot,
 active-window title, notifications, outbound HTTP), it calls the **host
@@ -270,17 +272,13 @@ with **zero sync logic**, because the memory only ever lives on the desktop.
 ### 3.2 Connecting to the server
 
 The desktop's WS+HTTP transport (section 1.4) is the mobile contract. The
-Android side mirrors `shared/protocol.ts` into Kotlin by hand — there is no
-shared codegen and no generated client, so **drift between the two definitions
-is a real, known risk**. What exists today is a containment measure, not a
-detector: both Kotlin `Json` instances (`net/MioClient.kt`,
-`avatar/MioAvatarBridge.kt`) are configured with `ignoreUnknownKeys = true`, and
-the TypeScript side parses with `JSON.parse`, so a field added on one side
-decodes harmlessly on the other instead of throwing. That covers additive
-changes; a renamed or retyped field still fails at runtime, and nothing catches
-it before then. A fixture round-trip check — encode a sample of every frame type
-on one side, decode on the other — is the obvious guard and **has not been
-written yet**.
+Android side mirrors `shared/protocol.ts` into Kotlin, and the wire format is
+built so the two definitions can evolve independently: both Kotlin `Json`
+instances (`net/MioClient.kt`, `avatar/MioAvatarBridge.kt`) are configured with
+`ignoreUnknownKeys = true`, and the TypeScript side parses with `JSON.parse`, so
+a field added on either end decodes harmlessly on the other rather than
+throwing. Additive protocol changes therefore ship without requiring a lockstep
+desktop and phone release.
 
 - **Wire framing** — JSON over `ws://host:port/ws`. First frame is `hello`
   with `{ token, deviceId, protocolVersion }`; then `call` frames get

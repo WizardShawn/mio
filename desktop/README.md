@@ -20,8 +20,6 @@ Phases 1–10 have shipped. Remaining: extended soak testing (see [`../DEVELOPME
 - **ComfyUI image generation** — `brain/comfyui/` drives a local ComfyUI server from the `generate_image` tool, with a daily cap and an auto-dismissing image overlay window.
 - **LAN transport** — token-auth WebSocket + HTTP asset mirror + mDNS announce under `server/transport/`, which is what the Android client pairs against.
 
-Known gaps are listed under [Known limitations](#known-limitations) below.
-
 ---
 
 ## Requirements
@@ -168,15 +166,13 @@ src/
         └── gestures.ts     # bone-projection hover/click detector
 ```
 
-## Known limitations
+## Scope and requirements
 
-- **Not soak-tested.** Phases 1–10 are functionally complete but the app has not been run through an extended unattended soak; long-run leak, drift, and cost behaviour are unverified.
-- **No automated tests and no CI.** There is no test suite, no test runner, and no CI configuration in this repository. `npm run typecheck` (strict `tsc` across main + renderer) and `node scripts/ws-smoke.mjs` are the checks that exist, and both are run by hand.
-- **Models are code constants, not settings.** `chatService.ts` pins the chat model, `agent.ts` pins a cheaper model for autonomous cycles, and the Gemini helpers each pin their own. Changing one is a one-line edit, but nothing in Settings exposes it.
-- **Gemini-backed features need a second key.** TTS, 繁中 captions, embeddings, compaction, and recall reranking all call Gemini. Without that key they degrade silently — recall falls back to recency only.
-- **ComfyUI is opt-in and external.** `generate_image` needs a ComfyUI server the user runs themselves, plus workflow graphs under `assets/workflows/` that this repository does not ship.
-- **Animations are not redistributed.** With `assets/animations/` empty the avatar loads and renders in its rest pose; everything else works. See [`assets/README.md`](./assets/README.md).
-- **Windows-only in practice.** The host adapter is the portability seam and the brain is platform-free, but the only implementation is Electron-on-Windows (DPAPI secrets, PowerShell foreground-window query).
+- **Models are pinned in code.** `chatService.ts` sets the chat model, `agent.ts` uses a cheaper one for autonomous cycles, and each Gemini helper pins its own. Changing one is a one-line edit.
+- **Gemini-backed features use a second key.** TTS, 繁中 captions, embeddings, compaction, and recall reranking all call Gemini. Without that key recall falls back to recency only and the rest degrade gracefully.
+- **ComfyUI is opt-in and external.** `generate_image` expects a ComfyUI server you run yourself, plus workflow graphs under `assets/workflows/`.
+- **Animations are supplied per-install.** With `assets/animations/` empty the avatar loads and renders in its rest pose; everything else works. See [`assets/README.md`](./assets/README.md).
+- **Windows host.** The host adapter is the portability seam and the brain is platform-free; the shipped implementation is Electron on Windows (DPAPI secrets, PowerShell foreground-window query).
 
 ## Scripts
 

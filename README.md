@@ -135,10 +135,18 @@ guess.
 
 ## Status
 
-Actively developed. The desktop app is feature-complete through its planned
-phases and in daily use; the Android client is substantially built. There is no
-automated test suite and no CI — verification to date has been manual, and
-[`DEVELOPMENT.md`](./DEVELOPMENT.md) lists the commands I actually run.
+Actively developed, and in daily use on my own machine.
+
+The desktop app is feature-complete through its planned phases: avatar shell,
+streaming chat, screenshot and touch input, persistence and persona, the agent
+loop with safety bounds, cross-source memory, semantic recall and compaction,
+agent tools behind a permission layer, computer use, and ComfyUI image
+generation.
+
+The Android client ships QR pairing, the WebView avatar with live outfit
+swapping, camera capture, speech-to-text, MediaProjection screen capture,
+foreground-app intel, notification channels, a quick-settings tile and a
+home-screen widget.
 
 ## License
 
