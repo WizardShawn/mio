@@ -1,0 +1,87 @@
+{
+  "name": "cortana-desktop-assistant",
+  "version": "0.1.0",
+  "description": "Persistent VRM-avatar desktop assistant: continuous agent loop, SQLite memory with hybrid recall, and a transport-agnostic brain.",
+  "private": true,
+  "main": "out/main/index.js",
+  "author": "I-Shun Lo <ishunl@outlook.com>",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "start": "electron-vite preview",
+    "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
+    "typecheck:web": "tsc --noEmit -p tsconfig.web.json",
+    "typecheck": "npm run typecheck:node && npm run typecheck:web",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "pw:install": "node scripts/install-browser.js",
+    "package": "npm run pw:install && electron-vite build && electron-builder --dir",
+    "dist": "npm run pw:install && electron-vite build && electron-builder"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "@pixiv/three-vrm": "^3.4.0",
+    "@pixiv/three-vrm-animation": "^3.4.0",
+    "@types/ws": "^8.18.1",
+    "better-sqlite3": "^12.10.0",
+    "bonjour-service": "^1.3.0",
+    "playwright": "^1.60.0",
+    "qrcode": "^1.5.4",
+    "three": "^0.169.0",
+    "ws": "^8.20.1"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.4",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.0",
+    "@types/qrcode": "^1.5.5",
+    "@types/three": "^0.169.0",
+    "electron": "^41.6.1",
+    "electron-builder": "^26.8.1",
+    "electron-vite": "^5.0.0",
+    "typescript": "^5.6.3",
+    "vite": "^7.3.3"
+  },
+  "build": {
+    "appId": "io.cortana.desktop",
+    "productName": "Mio",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/playwright/**/*",
+      "node_modules/playwright-core/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/playwright/**/*",
+      "node_modules/playwright-core/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "assets",
+        "to": "assets",
+        "filter": [
+          "**/*"
+        ]
+      },
+      {
+        "from": "persona.md",
+        "to": "persona.md"
+      },
+      {
+        "from": "pw-browsers",
+        "to": "pw-browsers",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
