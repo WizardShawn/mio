@@ -1,0 +1,74 @@
+name: Field report
+description: You ran Mio for a while — tell me what that was actually like.
+title: "[Field report] "
+labels: ["field-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for running it. The most useful reports are specific and unflattering.
+        Nothing here is required — answer what you have time for.
+
+  - type: input
+    id: duration
+    attributes:
+      label: How long did you keep it running?
+      description: An assistant that only survives one sitting has failed at the thing it is for.
+      placeholder: two afternoons, on and off
+    validations:
+      required: false
+
+  - type: dropdown
+    id: returned
+    attributes:
+      label: Did you start it again the next day, unprompted?
+      description: This is the single most useful answer on the form.
+      options:
+        - "Yes — I kept coming back to it"
+        - "No — once was enough"
+        - "Not yet, but I intend to"
+        - "Still in my first session"
+    validations:
+      required: false
+
+  - type: textarea
+    id: interrupt
+    attributes:
+      label: Did it interrupt you well?
+      description: It decides for itself when something is worth speaking up about. Did it get that right, stay too quiet, or talk over you?
+      placeholder: |
+        It stayed quiet for an hour, then flagged something on screen that was genuinely worth flagging.
+    validations:
+      required: false
+
+  - type: textarea
+    id: memory
+    attributes:
+      label: Did it remember the right things?
+      description: Something recalled days later that mattered — or something it should have remembered and did not.
+    validations:
+      required: false
+
+  - type: textarea
+    id: broke
+    attributes:
+      label: What broke or annoyed you?
+      description: Crashes, the avatar overlay misbehaving, permissions, performance, anything that made you want to close it. Be blunt.
+    validations:
+      required: false
+
+  - type: input
+    id: setup
+    attributes:
+      label: Setup
+      placeholder: Windows 11, RTX 4070, Claude Opus
+    validations:
+      required: false
+
+  - type: textarea
+    id: anything
+    attributes:
+      label: Anything else
+      description: Screenshots welcome. Please redact anything private that the screen watcher may have captured.
+    validations:
+      required: false
