@@ -4,7 +4,7 @@
   "description": "Persistent VRM-avatar desktop assistant: continuous agent loop, SQLite memory with hybrid recall, and a transport-agnostic brain.",
   "private": true,
   "main": "out/main/index.js",
-  "author": "I-Shun Lo <ishunl@outlook.com>",
+  "author": "WizardShawn",
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "dev": "electron-vite dev",

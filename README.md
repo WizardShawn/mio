@@ -154,7 +154,7 @@ extend either layer.
 
 ## Engineering approach
 
-Mio was designed, specified, directed and quality-assured by I-Shun Lo, with the
+Mio was specified, directed and quality-assured by its author, with the
 implementation produced through AI-driven development under that direction. That
 method is stated plainly because the architecture is the part worth judging, and
 it is the part that came from the design work rather than from the tooling.
@@ -183,6 +183,6 @@ their own separate terms.
 <div align="center">
 <br>
 
-**I-Shun Lo** · [ishunlo.studio](https://ishunlo.studio) · ishunl@outlook.com
+[ishunlo.studio](https://ishunlo.studio)
 
 </div>
